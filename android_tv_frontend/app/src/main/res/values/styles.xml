@@ -2,9 +2,10 @@
 <resources>
     <!-- PUBLIC_INTERFACE -->
     <!-- App theme used by AndroidManifest. Extends a stable, always-available parent. -->
-    <!-- We avoid AppCompat-only attributes like windowActionBar/windowNoTitle to prevent AAPT issues. -->
+    <!-- We avoid Material3/MaterialComponents or AppCompat-only attributes to prevent AAPT issues. -->
     <style name="AppTheme.NoActionBar" parent="@android:style/Theme.DeviceDefault.NoActionBar">
         <!-- Keep config minimal; Compose handles most UI. -->
+        <!-- Do not add windowActionBar/windowNoTitle here since parent may not support them. -->
         <item name="android:windowIsTranslucent">false</item>
     </style>
 </resources>
