@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +35,7 @@ import org.example.app.navigation.AppNavHost
 import org.example.app.navigation.Routes
 import org.example.app.ui.theme.CinematicTVTheme
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.Text
 
 /**
  * PUBLIC_INTERFACE
@@ -51,7 +50,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CinematicTVTheme {
+            var isDark by remember { mutableStateOf(false) }
+
+            CinematicTVTheme(useDarkTheme = isDark) {
                 val navController = rememberNavController()
 
                 Column(
@@ -66,11 +67,16 @@ class MainActivity : ComponentActivity() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     // Content area
-                    Box(modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 24.dp)
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 24.dp)
                     ) {
-                        AppNavHost(navController = navController)
+                        AppNavHost(
+                            navController = navController,
+                            isDarkTheme = isDark,
+                            onToggleDark = { isDark = it }
+                        )
                     }
                 }
             }
@@ -141,14 +147,13 @@ private fun NavChip(
             )
             .padding(horizontal = 20.dp, vertical = 12.dp)
     ) {
-        androidx.compose.material3.Text(
+        Text(
             text = label,
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(end = 4.dp)
         )
     }
 }

@@ -1,23 +1,15 @@
 package org.example.app.navigation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.compose.material3.Text
+import org.example.app.ui.details.DetailsScreen
+import org.example.app.ui.home.HomeScreen
+import org.example.app.ui.search.SearchScreen
+import org.example.app.ui.settings.SettingsScreen
 
 // PUBLIC_INTERFACE
 object Routes {
@@ -44,21 +36,24 @@ object Routes {
  *
  * Parameters:
  * - navController: NavHostController to drive navigation.
+ * - isDarkTheme: current dark theme setting.
+ * - onToggleDark: callback to update theme setting.
  *
  * Returns:
  * - Nothing. Renders composable destinations within NavHost.
  */
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(
+    navController: NavHostController,
+    isDarkTheme: Boolean,
+    onToggleDark: (Boolean) -> Unit
+) {
     NavHost(
         navController = navController,
         startDestination = Routes.Home
     ) {
         composable(Routes.Home) {
-            ScreenScaffold(
-                title = "Home",
-                subtitle = "Cinematic rows and featured content"
-            )
+            HomeScreen(navController = navController)
         }
 
         composable(
@@ -66,55 +61,18 @@ fun AppNavHost(navController: NavHostController) {
             arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id") ?: "unknown"
-            ScreenScaffold(
-                title = "Details",
-                subtitle = "Item id: $id"
-            )
+            DetailsScreen(id = id)
         }
 
         composable(Routes.Search) {
-            ScreenScaffold(
-                title = "Search",
-                subtitle = "Find movies and shows"
-            )
+            SearchScreen(navController = navController)
         }
 
         composable(Routes.Settings) {
-            ScreenScaffold(
-                title = "Settings",
-                subtitle = "Theme, preferences, and about"
+            SettingsScreen(
+                isDark = isDarkTheme,
+                onToggleDark = onToggleDark
             )
         }
-    }
-}
-
-/**
- * Simple TV-friendly placeholder screen scaffold for each destination.
- * Large typography and generous spacing for 10-foot UI.
- */
-@Composable
-private fun ScreenScaffold(
-    title: String,
-    subtitle: String
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.onBackground,
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(Modifier.height(16.dp))
-        Text(
-            text = subtitle,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
-            style = MaterialTheme.typography.titleLarge
-        )
     }
 }

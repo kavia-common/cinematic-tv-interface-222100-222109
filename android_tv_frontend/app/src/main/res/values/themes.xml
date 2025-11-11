@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- PUBLIC_INTERFACE -->
-    <!-- App theme extending Material3 DayNight NoActionBar to avoid cyclic inheritance -->
-    <style name="AppTheme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- TV-friendly defaults could be added here (e.g., larger font scales, focus visuals) -->
-    </style>
+    <!-- Theme definitions moved to styles.xml to avoid duplication -->
 </resources>
