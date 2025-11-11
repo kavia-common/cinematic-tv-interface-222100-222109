@@ -22,7 +22,7 @@ import androidx.tv.material3.MaterialTheme as TvMaterialTheme
 import androidx.tv.material3.darkColorScheme as tvDarkColorScheme
 import androidx.tv.material3.lightColorScheme as tvLightColorScheme
 
-@file:OptIn(ExperimentalTvMaterial3Api::class)
+
 
 // Color tokens based on style guide:
 // primary: #3b82f6, secondary: use as tonal reference; success/accent: #06b6d4
