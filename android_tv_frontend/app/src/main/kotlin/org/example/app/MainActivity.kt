@@ -142,7 +142,7 @@ private fun NavChip(
             .focusProperties { canFocus = true }
             .clickable(onClick = onClick, role = Role.Button)
             .background(
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(horizontal = 20.dp, vertical = 12.dp)

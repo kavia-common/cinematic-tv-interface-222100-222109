@@ -24,17 +24,23 @@ import androidx.tv.material3.lightColorScheme as tvLightColorScheme
 
 
 
-// Color tokens based on style guide:
-// primary: #3b82f6, secondary: use as tonal reference; success/accent: #06b6d4
+/**
+ * Core brand colors per style guide:
+ * - Primary: #3B82F6 (blue)
+ * - Accents (tertiary/success): #06B6D4 (cyan)
+ * - Secondary neutral: #64748B (slate)
+ */
 private val PrimaryBlue = androidx.compose.ui.graphics.Color(0xFF3B82F6)
 private val SecondarySlate = androidx.compose.ui.graphics.Color(0xFF64748B)
 private val SuccessCyan = androidx.compose.ui.graphics.Color(0xFF06B6D4)
 private val ErrorRed = androidx.compose.ui.graphics.Color(0xFFEF4444)
 
-private val LightBackground = androidx.compose.ui.graphics.Color(0xFFF9FAFB)
-private val LightSurface = androidx.compose.ui.graphics.Color(0xFFFFFFFF)
-private val LightOnSurface = androidx.compose.ui.graphics.Color(0xFF111827)
+// Light scheme surfaces
+private val LightBackground = androidx.compose.ui.graphics.Color(0xFFF9FAFB) // #f9fafb
+private val LightSurface = androidx.compose.ui.graphics.Color(0xFFFFFFFF)     // #ffffff
+private val LightOnSurface = androidx.compose.ui.graphics.Color(0xFF111827)   // #111827
 
+// Dark scheme surfaces
 private val DarkBackground = androidx.compose.ui.graphics.Color(0xFF0B1020)
 private val DarkSurface = androidx.compose.ui.graphics.Color(0xFF0F172A)
 private val DarkOnSurface = androidx.compose.ui.graphics.Color(0xFFE5E7EB)
@@ -196,10 +202,16 @@ fun CinematicTVTheme(
         onPrimaryContainer = colorScheme.onPrimaryContainer,
         secondary = colorScheme.secondary,
         onSecondary = colorScheme.onSecondary,
+        secondaryContainer = colorScheme.secondaryContainer,
+        onSecondaryContainer = colorScheme.onSecondaryContainer,
+        tertiary = colorScheme.tertiary,
+        onTertiary = colorScheme.onTertiary,
         background = colorScheme.background,
         onBackground = colorScheme.onBackground,
         surface = colorScheme.surface,
         onSurface = colorScheme.onSurface,
+        surfaceVariant = colorScheme.surfaceVariant,
+        onSurfaceVariant = colorScheme.onSurfaceVariant,
         error = colorScheme.error,
         onError = colorScheme.onError,
     )
@@ -212,10 +224,16 @@ fun CinematicTVTheme(
         onPrimaryContainer = colorScheme.onPrimaryContainer,
         secondary = colorScheme.secondary,
         onSecondary = colorScheme.onSecondary,
+        secondaryContainer = colorScheme.secondaryContainer,
+        onSecondaryContainer = colorScheme.onSecondaryContainer,
+        tertiary = colorScheme.tertiary,
+        onTertiary = colorScheme.onTertiary,
         background = colorScheme.background,
         onBackground = colorScheme.onBackground,
         surface = colorScheme.surface,
         onSurface = colorScheme.onSurface,
+        surfaceVariant = colorScheme.surfaceVariant,
+        onSurfaceVariant = colorScheme.onSurfaceVariant,
         error = colorScheme.error,
         onError = colorScheme.onError,
     )

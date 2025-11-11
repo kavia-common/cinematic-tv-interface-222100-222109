@@ -18,6 +18,10 @@ import org.example.app.data.SampleRepository
 import org.example.app.navigation.Routes
 import org.example.app.ui.components.PosterCard
 import androidx.navigation.NavController
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 
 /**
  * PUBLIC_INTERFACE
@@ -52,11 +56,18 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp)
                 ) {
-                    items(cat.items) { media ->
+                    // Ensure predictable initial focus: first item in each row is focused when entering the row
+                    items(cat.items.size) { index ->
+                        val media = cat.items[index]
+                        val requester = remember { FocusRequester() }
+                        if (index == 0) {
+                            LaunchedEffect(Unit) { requester.requestFocus() }
+                        }
                         PosterCard(
                             title = media.title,
                             imageRes = media.posterResId,
-                            onClick = { navController.navigate(Routes.detailsFor(media.id)) }
+                            onClick = { navController.navigate(Routes.detailsFor(media.id)) },
+                            modifier = if (index == 0) Modifier.focusRequester(requester) else Modifier
                         )
                     }
                 }

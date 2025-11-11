@@ -49,7 +49,8 @@ fun SearchScreen(navController: NavController) {
             onValueChange = { query = it },
             modifier = Modifier.focusRequester(focusRequester),
             singleLine = true,
-            label = { Text("Type to search") }
+            label = { Text("Type to search") },
+            placeholder = { Text("Movies, shows, genres...") }
         )
 
         Spacer(Modifier.height(24.dp))
