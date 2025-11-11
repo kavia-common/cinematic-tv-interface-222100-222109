@@ -33,5 +33,8 @@ androidApplication {
         // Existing dependencies
         implementation("org.apache.commons:commons-text:1.11.0")
         implementation(project(":utilities"))
+
+        // Unit test dependencies
+        implementation("junit:junit:4.13.2")
     }
 }
