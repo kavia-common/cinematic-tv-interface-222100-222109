@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- PUBLIC_INTERFACE -->
-    <!-- App theme extending Material3 to avoid missing variant errors -->
-    <style name="AppTheme.Material3.DayNight.NoActionBar" parent="Theme.Material3">
-        <!-- Prefer no action bar behavior -->
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <!-- App theme extending Material Components DayNight NoActionBar to ensure AAPT finds parent.
+         Referenced in AndroidManifest.xml:
+         android:theme="@style/AppTheme.MaterialComponents.DayNight.NoActionBar" -->
+    <style name="AppTheme.MaterialComponents.DayNight.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- TV-specific defaults -->
         <item name="android:windowIsTranslucent">false</item>
     </style>

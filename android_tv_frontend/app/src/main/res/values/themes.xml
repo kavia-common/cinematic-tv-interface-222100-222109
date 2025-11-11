@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Theme definitions moved to styles.xml to avoid duplication -->
+    <!-- Theme definitions are consolidated in styles.xml to avoid duplication -->
 </resources>
