@@ -1,7 +1,10 @@
 package org.example.app.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -16,34 +19,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import kotlinx.coroutines.delay
 import org.example.app.R
 import org.example.app.data.MediaItem
 import org.example.app.data.SampleRepository
@@ -53,36 +59,47 @@ import org.example.app.ui.components.PosterCard
 /**
  * PUBLIC_INTERFACE
  * Home screen displays:
- * - A cinematic featured banner with blurred backdrop and a prominent "Play Now" CTA
- * - 3 titled sections below with LazyRow carousels fed from SampleRepository lists
- * - Dark gradient background and fade-in animations
+ * - A cinematic featured banner with parallax and crossfade backdrop plus a "Play Now" CTA
+ * - Multiple titled sections below with LazyRow carousels (including Sci‑Fi, Horror, Child, Romantic, Thriller)
+ * - Dark gradient background and staggered fade/scale animations
  * - TV-friendly D-pad focus navigation
  */
 @Composable
 fun HomeScreen(
     navController: NavController
 ) {
-    // Use explicit repository lists as requested
+    // Repository lists
     val recommended: List<MediaItem> = SampleRepository.recommended()
     val topPicks: List<MediaItem> = SampleRepository.topPicks()
     val recentlyAdded: List<MediaItem> = SampleRepository.recentlyAdded()
+    val sciFi: List<MediaItem> = SampleRepository.sciFi()
+    val horror: List<MediaItem> = SampleRepository.horror()
+    val child: List<MediaItem> = SampleRepository.child()
+    val romantic: List<MediaItem> = SampleRepository.romantic()
+    val thriller: List<MediaItem> = SampleRepository.thriller()
+
     val sections: List<Pair<String, List<MediaItem>>> = listOf(
         "Recommended" to recommended,
         "Top Picks" to topPicks,
-        "Recently Added" to recentlyAdded
+        "Recently Added" to recentlyAdded,
+        "Sci-Fi" to sciFi,
+        "Horror" to horror,
+        "Child" to child,
+        "Romantic" to romantic,
+        "Thriller" to thriller
     )
-    // The banner should feature Interstellar prominently if present
+
+    // Feature Interstellar if present
     val featuredItem = recommended.firstOrNull { it.title.equals("Interstellar", ignoreCase = true) }
         ?: recommended.firstOrNull()
         ?: topPicks.firstOrNull()
         ?: recentlyAdded.first()
 
     val bannerBackgrounds = SampleRepository.bannerBackgrounds()
-    val bannerUrl = remember(bannerBackgrounds) { bannerBackgrounds.firstOrNull() ?: featuredItem.backdropUrl }
 
     // Focus requesters
-    val bannerCtaFocus = remember { FocusRequester() }
-    val firstRowFirstItemFocus = remember { FocusRequester() }
+    val bannerCtaFocus = remember { androidx.compose.ui.focus.FocusRequester() }
+    val firstRowFirstItemFocus = remember { androidx.compose.ui.focus.FocusRequester() }
 
     LaunchedEffect(Unit) {
         bannerCtaFocus.requestFocus()
@@ -93,7 +110,10 @@ fun HomeScreen(
         colors = listOf(Color(0xFF0D0D0D), Color(0xFF1A1A1A))
     )
 
+    val listState = remember { LazyListState() }
+
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .background(bgGradient)
@@ -104,14 +124,15 @@ fun HomeScreen(
         item {
             FeaturedBanner(
                 item = featuredItem,
-                bannerImageUrl = bannerUrl ?: featuredItem.backdropUrl,
+                bannerImageUrls = bannerBackgrounds.ifEmpty { listOfNotNull(featuredItem.backdropUrl) },
                 onPlay = { media -> navController.navigate(Routes.detailsFor(media.id)) },
                 ctaFocusRequester = bannerCtaFocus,
-                nextDownRequester = firstRowFirstItemFocus
+                nextDownRequester = firstRowFirstItemFocus,
+                listState = listState
             )
         }
 
-        // Build out requested sections with staggered fade-in
+        // Build out sections with titles fading before items and per-item stagger
         items(sections.size) { index ->
             val (title, itemsList) = sections[index]
             SectionRow(
@@ -127,37 +148,64 @@ fun HomeScreen(
 
 /**
  * PUBLIC_INTERFACE
- * A large featured banner displaying a backdrop URL (if available) with subtle blur,
- * title/description from the selected item, and a primary "Play Now" CTA.
+ * A large featured banner displaying a backdrop URL set with subtle blur,
+ * parallax on vertical scroll, and crossfade rotation between images.
+ * Includes title/description and a primary "Play Now" CTA.
  */
 @Composable
 private fun FeaturedBanner(
     item: MediaItem,
-    bannerImageUrl: String?,
+    bannerImageUrls: List<String>,
     onPlay: (MediaItem) -> Unit,
-    ctaFocusRequester: FocusRequester,
-    nextDownRequester: FocusRequester?
+    ctaFocusRequester: androidx.compose.ui.focus.FocusRequester,
+    nextDownRequester: androidx.compose.ui.focus.FocusRequester?,
+    listState: LazyListState
 ) {
+    // Crossfade index that rotates every few seconds
+    var index by remember { mutableIntStateOf(0) }
+    LaunchedEffect(bannerImageUrls) {
+        while (bannerImageUrls.isNotEmpty()) {
+            delay(4000)
+            index = (index + 1) % bannerImageUrls.size
+        }
+    }
+
+    // Subtle parallax based on scroll offset
+    val offsetFraction by remember {
+        derivedStateOf {
+            val first = listState.firstVisibleItemScrollOffset.coerceAtMost(200)
+            first / 200f
+        }
+    }
+    val parallax by animateFloatAsState(
+        targetValue = -16f * offsetFraction, // move up to -16.dp
+        animationSpec = tween(300, easing = LinearOutSlowInEasing),
+        label = "bannerParallax"
+    )
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(320.dp)
             .clipToBounds()
+            .padding(top = parallax.dp) // subtle parallax shift
     ) {
-        val painter: AsyncImagePainter = rememberAsyncImagePainter(
-            model = bannerImageUrl ?: item.backdropUrl,
-            placeholder = painterResource(id = R.drawable.placeholder_backdrop),
-            error = painterResource(id = R.drawable.placeholder_backdrop)
-        )
-
-        androidx.compose.foundation.Image(
-            painter = painter,
-            contentDescription = "Featured Banner",
-            modifier = Modifier
-                .matchParentSize()
-                .blur(radius = 8.dp),
-            contentScale = ContentScale.Crop
-        )
+        Crossfade(targetState = index, animationSpec = tween(600, easing = EaseOutCubic), label = "bannerCrossfade") { i ->
+            val url = bannerImageUrls.getOrNull(i) ?: item.backdropUrl
+            val painter: AsyncImagePainter = rememberAsyncImagePainter(
+                model = url,
+                placeholder = painterResource(id = R.drawable.placeholder_backdrop),
+                error = painterResource(id = R.drawable.placeholder_backdrop)
+            )
+            androidx.compose.foundation.Image(
+                painter = painter,
+                contentDescription = "Featured Banner",
+                modifier = Modifier
+                    .matchParentSize()
+                    .blur(radius = 8.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -173,13 +221,13 @@ private fun FeaturedBanner(
                 )
         )
 
-        // Fade the text/CTA in smoothly for cinematic feel
+        // Fade the text/CTA in smoothly
         var bannerVisible by remember { mutableStateOf(false) }
         LaunchedEffect(Unit) { bannerVisible = true }
 
-        androidx.compose.animation.AnimatedVisibility(
+        AnimatedVisibility(
             visible = bannerVisible,
-            enter = fadeIn(animationSpec = tween(240, easing = EaseOutCubic)),
+            enter = fadeIn(animationSpec = tween(260, easing = EaseOutCubic)),
             exit = fadeOut(animationSpec = tween(150))
         ) {
             Column(
@@ -189,14 +237,14 @@ private fun FeaturedBanner(
                 verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
-                    text = "Interstellar",
+                    text = item.title,
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    text = "A team travels through a wormhole in space in an attempt to ensure humanity's survival.",
+                    text = item.overview,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
                     maxLines = 2
@@ -221,7 +269,8 @@ private fun FeaturedBanner(
 
 /**
  * PUBLIC_INTERFACE
- * A titled row section that fades in and shows a LazyRow of PosterCard items.
+ * A titled row section where the title fades in slightly before items.
+ * Items use per-item staggered fade+scale-in animation.
  * The first item can receive a provided FocusRequester for coordinated focus traversal.
  */
 @Composable
@@ -229,53 +278,86 @@ private fun SectionRow(
     title: String,
     items: List<MediaItem>,
     navTo: (String) -> Unit,
-    firstItemFocusRequester: FocusRequester? = null,
+    firstItemFocusRequester: androidx.compose.ui.focus.FocusRequester? = null,
     rowIndex: Int
 ) {
-    var visible by remember { mutableStateOf(false) }
-    // Performance-friendly computation of staggered delay per row index
-    val delayMs by remember(rowIndex) { derivedStateOf { 80 * rowIndex } } // 0, 80, 160...
-    val durationMs by remember { derivedStateOf { 220 } } // within 200–300ms range
+    var titleVisible by remember { mutableStateOf(false) }
+    var rowVisible by remember { mutableStateOf(false) }
+    val rowDelay = 80 * rowIndex
 
     LaunchedEffect(Unit) {
-        // Introduce stagger
-        kotlinx.coroutines.delay(delayMs.toLong())
-        visible = true
+        delay((rowDelay).toLong())
+        titleVisible = true
+        delay(80) // title fades before items
+        rowVisible = true
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(horizontal = 12.dp)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
         AnimatedVisibility(
-            visible = visible,
-            enter = fadeIn(animationSpec = tween(durationMillis = durationMs, easing = EaseOutCubic)),
+            visible = titleVisible,
+            enter = fadeIn(animationSpec = tween(durationMillis = 240, easing = EaseOutCubic)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 120))
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        AnimatedVisibility(
+            visible = rowVisible,
+            enter = fadeIn(animationSpec = tween(durationMillis = 220, easing = EaseOutCubic)),
             exit = fadeOut(animationSpec = tween(durationMillis = 160))
         ) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp)
             ) {
-                items(items) { media ->
-                    val isFirst = items.firstOrNull()?.id == media.id
-                    PosterCard(
-                        title = media.title,
-                        imageRes = media.posterResId,
-                        imageUrl = media.posterUrl,
-                        onClick = { navTo(media.id) },
-                        modifier = if (isFirst && firstItemFocusRequester != null) {
+                itemsIndexed(items) { idx, media ->
+                    // Per-item stagger with fade+scale in
+                    var itemVisible by remember { mutableStateOf(false) }
+                    LaunchedEffect(Unit) {
+                        delay((idx * 40L)) // 40ms stagger
+                        itemVisible = true
+                    }
+                    val itemAlpha by animateFloatAsState(
+                        targetValue = if (itemVisible) 1f else 0f,
+                        animationSpec = tween(220, easing = EaseOutCubic),
+                        label = "itemAlpha"
+                    )
+                    val itemScale by animateFloatAsState(
+                        targetValue = if (itemVisible) 1f else 0.92f,
+                        animationSpec = tween(220, easing = EaseOutCubic),
+                        label = "itemScale"
+                    )
+
+                    val baseModifier =
+                        if (idx == 0 && firstItemFocusRequester != null) {
                             Modifier.focusRequester(firstItemFocusRequester)
                         } else {
                             Modifier
                         }
-                    )
+
+                    Box(
+                        modifier = baseModifier
+                            .graphicsLayer {
+                                alpha = itemAlpha
+                                scaleX = itemScale
+                                scaleY = itemScale
+                            }
+                    ) {
+                        PosterCard(
+                            title = media.title,
+                            imageRes = media.posterResId,
+                            imageUrl = media.posterUrl,
+                            onClick = { navTo(media.id) }
+                        )
+                    }
                 }
             }
         }

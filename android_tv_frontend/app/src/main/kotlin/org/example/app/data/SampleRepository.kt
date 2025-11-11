@@ -57,6 +57,27 @@ object SampleRepository {
             category = "Recommended",
             posterUrl = "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop"
         ),
+        UrlItem(
+            id = "rec_matrix",
+            title = "The Matrix",
+            overview = "A hacker discovers the reality is a simulation.",
+            category = "Recommended",
+            posterUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"
+        ),
+        UrlItem(
+            id = "rec_arrival",
+            title = "Arrival",
+            overview = "A linguist works with the military to communicate with alien lifeforms.",
+            category = "Recommended",
+            posterUrl = "https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"
+        ),
+        UrlItem(
+            id = "rec_dune",
+            title = "Dune",
+            overview = "A war for control of the desert planet Arrakis.",
+            category = "Recommended",
+            posterUrl = "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop"
+        ),
     )
 
     // Top Picks: Dune, The Martian, Blade Runner, Star Wars, Arrival
@@ -95,6 +116,20 @@ object SampleRepository {
             overview = "A linguist works with the military to communicate with alien lifeforms.",
             category = "Top Picks",
             posterUrl = "https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"
+        ),
+        UrlItem(
+            id = "top_inception",
+            title = "Inception",
+            overview = "A dream heist through layered realities.",
+            category = "Top Picks",
+            posterUrl = "https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=600&auto=format&fit=crop"
+        ),
+        UrlItem(
+            id = "top_gravity",
+            title = "Gravity",
+            overview = "Survival story in space after an accident.",
+            category = "Top Picks",
+            posterUrl = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop"
         ),
     )
 
@@ -135,6 +170,76 @@ object SampleRepository {
             category = "Recently Added",
             posterUrl = "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=600&auto=format&fit=crop"
         ),
+        UrlItem(
+            id = "new_tenet",
+            title = "Tenet",
+            overview = "Time-bending mission to prevent World War III.",
+            category = "Recently Added",
+            posterUrl = "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop"
+        ),
+        UrlItem(
+            id = "new_matrix",
+            title = "The Matrix",
+            overview = "A hacker discovers a simulated reality.",
+            category = "Recently Added",
+            posterUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"
+        ),
+    )
+
+    // New categories: Sci-Fi, Horror, Child, Romantic, Thriller (8–10 items each reusing URLs)
+    private val sciFiInternal: List<UrlItem> = listOf(
+        UrlItem("sf_interstellar","Interstellar","Through a wormhole for humanity's survival.","Sci-Fi","https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_dune","Dune","Power struggles on Arrakis.","Sci-Fi","https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_martian","The Martian","Stranded astronaut on Mars.","Sci-Fi","https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_bladerunner","Blade Runner","Replicants and identity.","Sci-Fi","https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_arrival","Arrival","Linguist meets aliens.","Sci-Fi","https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_inception","Inception","Dream heist through layers.","Sci-Fi","https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_gravity","Gravity","Survival in orbit.","Sci-Fi","https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("sf_avatar","Avatar","Pandora expedition.","Sci-Fi","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop"),
+    )
+
+    private val horrorInternal: List<UrlItem> = listOf(
+        UrlItem("hor_joker","Joker","A descent into madness.","Horror","https://images.unsplash.com/photo-1541535881962-3bb380b08458?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_nightsky","Night Stalker","Shadows over the city.","Horror","https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_darkcity","Dark City","Neon fears and unknowns.","Horror","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_tenebris","Tenebris","Time twists and terror.","Horror","https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_void","The Void","Between worlds and sanity.","Horror","https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_abandoned","Abandoned","Echoes of the past.","Horror","https://images.unsplash.com/photo-1520975937866-7168d54afa8c?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_ritual","The Ritual","A pact gone wrong.","Horror","https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("hor_sleepless","Sleepless","Insomnia meets nightmare.","Horror","https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=600&auto=format&fit=crop"),
+    )
+
+    private val childInternal: List<UrlItem> = listOf(
+        UrlItem("kid_quest","Forest Quest","Adventures with friends.","Child","https://images.unsplash.com/photo-1520975937866-7168d54afa8c?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_stars","Stars and Wishes","Dreams among galaxies.","Child","https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_city","City Lights","Urban explorations.","Child","https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_space","Little Astronaut","Journey to space.","Child","https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_race","Toy Racers","Speed and fun.","Child","https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_pink","Dream House","Imagination unleashed.","Child","https://images.unsplash.com/photo-1520975937866-7168d54afa8c?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_sand","Dunes Day","Sandy discoveries.","Child","https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("kid_camp","Star Camp","Camp under stars.","Child","https://images.unsplash.com/photo-1454789548928-9efd52dc4031?q=80&w=600&auto=format&fit=crop"),
+    )
+
+    private val romanticInternal: List<UrlItem> = listOf(
+        UrlItem("rom_city","City of Hearts","Neon night romance.","Romantic","https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_starry","Under The Stars","A cosmic love tale.","Romantic","https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_waves","Waves of You","Love by the shore.","Romantic","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_letters","Letters","Time-crossed letters.","Romantic","https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_metro","Midnight Metro","Chance encounters.","Romantic","https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_summer","Endless Summer","Sunlit promises.","Romantic","https://images.unsplash.com/photo-1520975937866-7168d54afa8c?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_skyline","Skyline Serenade","Rooftop rendezvous.","Romantic","https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("rom_arrival","We Met","Two paths converge.","Romantic","https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"),
+    )
+
+    private val thrillerInternal: List<UrlItem> = listOf(
+        UrlItem("thr_tenet","Tenet","Inversion and intrigue.","Thriller","https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_blade","Blade Runner","Chasing replicants.","Thriller","https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_matrix","Matrix","Hack the truth.","Thriller","https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_stalker","Stalker","Hunted at night.","Thriller","https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_heist","The Heist","Plans within plans.","Thriller","https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_signal","The Signal","Unknown transmission.","Thriller","https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_runner","Runner","Escape the city.","Thriller","https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600&auto=format&fit=crop"),
+        UrlItem("thr_contact","Contact","Message decoded.","Thriller","https://images.unsplash.com/photo-1462332420958-a05d1e002413?q=80&w=600&auto=format&fit=crop"),
     )
 
     // Banner backgrounds: Sci-Fi Landscape, Neon City, Space Theme, Night Skyline, Theater Lights
@@ -166,6 +271,11 @@ object SampleRepository {
             Category("Recommended", recommendedInternal.map { it.toMediaItem() }),
             Category("Top Picks", topPicksInternal.map { it.toMediaItem() }),
             Category("Recently Added", recentlyAddedInternal.map { it.toMediaItem() }),
+            Category("Sci-Fi", sciFiInternal.map { it.toMediaItem() }),
+            Category("Horror", horrorInternal.map { it.toMediaItem() }),
+            Category("Child", childInternal.map { it.toMediaItem() }),
+            Category("Romantic", romanticInternal.map { it.toMediaItem() }),
+            Category("Thriller", thrillerInternal.map { it.toMediaItem() }),
         )
     }
 
@@ -180,6 +290,21 @@ object SampleRepository {
 
     // PUBLIC_INTERFACE
     fun recentlyAdded(): List<MediaItem> = recentlyAddedInternal.map { it.toMediaItem() }
+
+    // PUBLIC_INTERFACE
+    fun sciFi(): List<MediaItem> = sciFiInternal.map { it.toMediaItem() }
+
+    // PUBLIC_INTERFACE
+    fun horror(): List<MediaItem> = horrorInternal.map { it.toMediaItem() }
+
+    // PUBLIC_INTERFACE
+    fun child(): List<MediaItem> = childInternal.map { it.toMediaItem() }
+
+    // PUBLIC_INTERFACE
+    fun romantic(): List<MediaItem> = romanticInternal.map { it.toMediaItem() }
+
+    // PUBLIC_INTERFACE
+    fun thriller(): List<MediaItem> = thrillerInternal.map { it.toMediaItem() }
 
     // PUBLIC_INTERFACE
     fun bannerBackgrounds(): List<String> = bannerBackgroundsInternal.toList()
