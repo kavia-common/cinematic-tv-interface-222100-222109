@@ -1,6 +1,8 @@
 package org.example.app.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -26,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -35,17 +38,17 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import org.example.app.R
 import org.example.app.data.MediaItem
 import org.example.app.data.SampleRepository
 import org.example.app.navigation.Routes
 import org.example.app.ui.components.PosterCard
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import androidx.compose.ui.res.painterResource
 
 /**
  * PUBLIC_INTERFACE
@@ -108,13 +111,15 @@ fun HomeScreen(
             )
         }
 
-        // Build out requested sections
-        items(sections) { (title, items) ->
+        // Build out requested sections with staggered fade-in
+        items(sections.size) { index ->
+            val (title, itemsList) = sections[index]
             SectionRow(
                 title = title,
-                items = items,
+                items = itemsList,
                 navTo = { id -> navController.navigate(Routes.detailsFor(id)) },
-                firstItemFocusRequester = if (title == sections.first().first) firstRowFirstItemFocus else null
+                firstItemFocusRequester = if (index == 0) firstRowFirstItemFocus else null,
+                rowIndex = index
             )
         }
     }
@@ -168,37 +173,47 @@ private fun FeaturedBanner(
                 )
         )
 
-        Column(
-            modifier = Modifier
-                .matchParentSize()
-                .padding(horizontal = 16.dp, vertical = 20.dp),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Text(
-                text = "Interstellar",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = "A team travels through a wormhole in space in an attempt to ensure humanity's survival.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
-                maxLines = 2
-            )
-            Spacer(Modifier.height(12.dp))
+        // Fade the text/CTA in smoothly for cinematic feel
+        var bannerVisible by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) { bannerVisible = true }
 
-            Button(
-                onClick = { onPlay(item) },
+        androidx.compose.animation.AnimatedVisibility(
+            visible = bannerVisible,
+            enter = fadeIn(animationSpec = tween(240, easing = EaseOutCubic)),
+            exit = fadeOut(animationSpec = tween(150))
+        ) {
+            Column(
                 modifier = Modifier
-                    .focusRequester(ctaFocusRequester),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF00BCD4),
-                    contentColor = Color.Black
-                )
+                    .matchParentSize()
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
-                Text(text = "Play Now")
+                Text(
+                    text = "Interstellar",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = "A team travels through a wormhole in space in an attempt to ensure humanity's survival.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
+                    maxLines = 2
+                )
+                Spacer(Modifier.height(12.dp))
+
+                Button(
+                    onClick = { onPlay(item) },
+                    modifier = Modifier
+                        .focusRequester(ctaFocusRequester),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF00BCD4),
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(text = "Play Now")
+                }
             }
         }
     }
@@ -214,10 +229,19 @@ private fun SectionRow(
     title: String,
     items: List<MediaItem>,
     navTo: (String) -> Unit,
-    firstItemFocusRequester: FocusRequester? = null
+    firstItemFocusRequester: FocusRequester? = null,
+    rowIndex: Int
 ) {
     var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { visible = true }
+    // Performance-friendly computation of staggered delay per row index
+    val delayMs by remember(rowIndex) { derivedStateOf { 80 * rowIndex } } // 0, 80, 160...
+    val durationMs by remember { derivedStateOf { 220 } } // within 200–300ms range
+
+    LaunchedEffect(Unit) {
+        // Introduce stagger
+        kotlinx.coroutines.delay(delayMs.toLong())
+        visible = true
+    }
 
     Column(
         modifier = Modifier
@@ -232,8 +256,8 @@ private fun SectionRow(
         Spacer(modifier = Modifier.height(12.dp))
         AnimatedVisibility(
             visible = visible,
-            enter = fadeIn(),
-            exit = fadeOut()
+            enter = fadeIn(animationSpec = tween(durationMillis = durationMs, easing = EaseOutCubic)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 160))
         ) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
