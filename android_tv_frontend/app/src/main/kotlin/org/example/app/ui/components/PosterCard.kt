@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.toArgb
 /**
  * PUBLIC_INTERFACE
  * TV Poster card that scales when focused and triggers onClick via D‑pad/enter.
+ * Focus glow uses teal accent (#00BCD4) for brand emphasis on TV.
  */
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -45,11 +46,12 @@ fun PosterCard(
     onClick: () -> Unit
 ) {
     var focused by remember { mutableStateOf(false) }
-    val scale = if (focused) 1.08f else 1.0f
+    val scale = if (focused) 1.07f else 1.0f
     val corner = 12.dp
     val borderWidth = if (focused) 2.dp else 0.dp
-    val borderColor = if (focused) MaterialTheme.colorScheme.primary else Color.Transparent
-    val glowColor = MaterialTheme.colorScheme.primary.copy(alpha = if (focused) 0.55f else 0f)
+    val accentTeal = Color(0xFF00BCD4)
+    val borderColor = if (focused) accentTeal else Color.Transparent
+    val glowColor = accentTeal.copy(alpha = if (focused) 0.6f else 0f)
 
     Card(
         onClick = onClick,
@@ -66,7 +68,7 @@ fun PosterCard(
                         paint.asFrameworkPaint().apply {
                             isAntiAlias = true
                             color = glowColor.toArgb()
-                            setShadowLayer(24f, 0f, 10f, glowColor.copy(alpha = 0.9f).toArgb())
+                            setShadowLayer(28f, 0f, 12f, glowColor.copy(alpha = 0.95f).toArgb())
                         }
                         val inset = -8f
                         canvas.drawRoundRect(

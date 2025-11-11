@@ -31,6 +31,26 @@ object SampleRepository {
                 year = 2022,
                 rating = 4.0
             ),
+            MediaItem(
+                id = "a3",
+                title = "Neon Ambush",
+                overview = "An undercover officer hunts a syndicate across a neon-drenched metropolis.",
+                category = "Action",
+                posterResId = R.drawable.placeholder_poster,
+                backdropResId = R.drawable.placeholder_backdrop,
+                year = 2021,
+                rating = 4.1
+            ),
+            MediaItem(
+                id = "a4",
+                title = "Last Circuit",
+                overview = "A washed-up racer returns for one final high-stakes championship.",
+                category = "Action",
+                posterResId = R.drawable.placeholder_poster,
+                backdropResId = R.drawable.placeholder_backdrop,
+                year = 2019,
+                rating = 3.9
+            ),
         )
 
         val drama = listOf(
@@ -54,6 +74,26 @@ object SampleRepository {
                 year = 2021,
                 rating = 4.3
             ),
+            MediaItem(
+                id = "d3",
+                title = "Winter Noon",
+                overview = "Two estranged siblings reunite to sell their childhood home.",
+                category = "Drama",
+                posterResId = R.drawable.placeholder_poster,
+                backdropResId = R.drawable.placeholder_backdrop,
+                year = 2020,
+                rating = 4.0
+            ),
+            MediaItem(
+                id = "d4",
+                title = "Stone and Silk",
+                overview = "A fashion designer confronts her past while preparing a pivotal show.",
+                category = "Drama",
+                posterResId = R.drawable.placeholder_poster,
+                backdropResId = R.drawable.placeholder_backdrop,
+                year = 2018,
+                rating = 3.8
+            ),
         )
 
         val scifi = listOf(
@@ -76,6 +116,26 @@ object SampleRepository {
                 backdropResId = R.drawable.placeholder_backdrop,
                 year = 2024,
                 rating = 4.6
+            ),
+            MediaItem(
+                id = "s3",
+                title = "The Null Divide",
+                overview = "A coder discovers a recursion loop erasing memories across a city.",
+                category = "Sci‑Fi",
+                posterResId = R.drawable.placeholder_poster,
+                backdropResId = R.drawable.placeholder_backdrop,
+                year = 2022,
+                rating = 4.4
+            ),
+            MediaItem(
+                id = "s4",
+                title = "Prism Gate",
+                overview = "Scientists unlock a portal to a world with bent laws of physics.",
+                category = "Sci‑Fi",
+                posterResId = R.drawable.placeholder_poster,
+                backdropResId = R.drawable.placeholder_backdrop,
+                year = 2017,
+                rating = 3.9
             ),
         )
 
