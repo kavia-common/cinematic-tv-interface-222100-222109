@@ -26,7 +26,8 @@ object SampleRepository {
             title = "Interstellar",
             overview = "A team travels through a wormhole in space in an attempt to ensure humanity's survival.",
             category = "Recommended",
-            posterUrl = "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop"
+            posterUrl = "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=600&auto=format&fit=crop",
+            backdropUrl = "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1920&auto=format&fit=crop"
         ),
         UrlItem(
             id = "rec_inception",
@@ -151,9 +152,11 @@ object SampleRepository {
             title = title,
             overview = overview,
             category = category,
-            // Keep placeholders for resource ids as required by existing UI; URLs will be used by UI when available.
+            // Resources as fallbacks; UI will prefer URLs
             posterResId = R.drawable.placeholder_poster,
             backdropResId = R.drawable.placeholder_backdrop,
+            posterUrl = posterUrl,
+            backdropUrl = backdropUrl,
             year = 2024,
             rating = 4.5,
         )

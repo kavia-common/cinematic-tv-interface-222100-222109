@@ -27,6 +27,9 @@ androidApplication {
         implementation("androidx.tv:tv-foundation:1.0.0-alpha10")
         implementation("androidx.tv:tv-material:1.0.0-alpha10")
 
+        // Coil for image loading
+        implementation("io.coil-kt:coil-compose:2.6.0")
+
         // Material Components for Android (XML themes/resources)
         implementation("com.google.android.material:material:1.12.0")
 

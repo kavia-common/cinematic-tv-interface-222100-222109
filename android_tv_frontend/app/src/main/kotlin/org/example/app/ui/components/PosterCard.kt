@@ -1,6 +1,5 @@
 package org.example.app.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
@@ -28,20 +27,25 @@ import androidx.tv.material3.CardDefaults
 import androidx.tv.material3.Text
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.toArgb
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import org.example.app.R
+import androidx.compose.ui.res.painterResource
 
 /**
  * PUBLIC_INTERFACE
  * TV Poster card that scales when focused and triggers onClick via D‑pad/enter.
- * Focus glow uses teal accent (#00BCD4) for brand emphasis on TV.
+ * Uses Coil to load remote images where available, with rounded corners (12.dp),
+ * subtle shadow glow on focus, and teal accent outline.
  */
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun PosterCard(
     title: String,
     imageRes: Int,
+    imageUrl: String? = null,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -52,6 +56,12 @@ fun PosterCard(
     val accentTeal = Color(0xFF00BCD4)
     val borderColor = if (focused) accentTeal else Color.Transparent
     val glowColor = accentTeal.copy(alpha = if (focused) 0.6f else 0f)
+
+    val painter: AsyncImagePainter = rememberAsyncImagePainter(
+        model = imageUrl,
+        placeholder = painterResource(id = imageRes),
+        error = painterResource(id = imageRes)
+    )
 
     Card(
         onClick = onClick,
@@ -93,8 +103,8 @@ fun PosterCard(
                 .clip(RoundedCornerShape(corner))
                 .background(Color(0x14000000))
         ) {
-            Image(
-                painter = painterResource(id = imageRes),
+            androidx.compose.foundation.Image(
+                painter = painter,
                 contentDescription = title,
                 modifier = Modifier
                     .aspectRatio(2f / 3f), // typical poster ratio

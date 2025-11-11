@@ -3,7 +3,6 @@ package org.example.app.ui.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -45,6 +43,9 @@ import org.example.app.data.MediaItem
 import org.example.app.data.SampleRepository
 import org.example.app.navigation.Routes
 import org.example.app.ui.components.PosterCard
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.res.painterResource
 
 /**
  * PUBLIC_INTERFACE
@@ -67,9 +68,14 @@ fun HomeScreen(
         "Top Picks" to topPicks,
         "Recently Added" to recentlyAdded
     )
+    // The banner should feature Interstellar prominently if present
+    val featuredItem = recommended.firstOrNull { it.title.equals("Interstellar", ignoreCase = true) }
+        ?: recommended.firstOrNull()
+        ?: topPicks.firstOrNull()
+        ?: recentlyAdded.first()
+
     val bannerBackgrounds = SampleRepository.bannerBackgrounds()
-    // Pick first banner; could rotate by index or random on recomposition if desired
-    val bannerUrl = remember(bannerBackgrounds) { bannerBackgrounds.firstOrNull() }
+    val bannerUrl = remember(bannerBackgrounds) { bannerBackgrounds.firstOrNull() ?: featuredItem.backdropUrl }
 
     // Focus requesters
     val bannerCtaFocus = remember { FocusRequester() }
@@ -79,9 +85,9 @@ fun HomeScreen(
         bannerCtaFocus.requestFocus()
     }
 
-    // Background gradient
+    // Background gradient (#0D0D0D → #1A1A1A)
     val bgGradient = Brush.verticalGradient(
-        colors = listOf(Color(0xFF0D0D0D), Color(0xFF1C1C1C))
+        colors = listOf(Color(0xFF0D0D0D), Color(0xFF1A1A1A))
     )
 
     LazyColumn(
@@ -94,8 +100,8 @@ fun HomeScreen(
     ) {
         item {
             FeaturedBanner(
-                item = recommended.firstOrNull() ?: topPicks.firstOrNull() ?: recentlyAdded.first(),
-                bannerImageUrl = bannerUrl,
+                item = featuredItem,
+                bannerImageUrl = bannerUrl ?: featuredItem.backdropUrl,
                 onPlay = { media -> navController.navigate(Routes.detailsFor(media.id)) },
                 ctaFocusRequester = bannerCtaFocus,
                 nextDownRequester = firstRowFirstItemFocus
@@ -130,32 +136,23 @@ private fun FeaturedBanner(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(320.dp)
             .clipToBounds()
     ) {
-        // Backdrop: prefer banner URL when available, otherwise fall back to local placeholder
-        if (bannerImageUrl != null) {
-            // We don't add Coil; keep existing approach comments. If Coil is present, it can replace this.
-            // Using an empty Box with background is not ideal; instead, keep showing placeholder vector
-            // and rely on future enhancement to load URL images.
-            Image(
-                painter = androidx.compose.ui.res.painterResource(id = R.drawable.placeholder_backdrop),
-                contentDescription = "Featured Banner",
-                modifier = Modifier
-                    .matchParentSize()
-                    .blur(radius = 8.dp),
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Image(
-                painter = androidx.compose.ui.res.painterResource(id = R.drawable.placeholder_backdrop),
-                contentDescription = "Featured Banner",
-                modifier = Modifier
-                    .matchParentSize()
-                    .blur(radius = 8.dp),
-                contentScale = ContentScale.Crop
-            )
-        }
+        val painter: AsyncImagePainter = rememberAsyncImagePainter(
+            model = bannerImageUrl ?: item.backdropUrl,
+            placeholder = painterResource(id = R.drawable.placeholder_backdrop),
+            error = painterResource(id = R.drawable.placeholder_backdrop)
+        )
+
+        androidx.compose.foundation.Image(
+            painter = painter,
+            contentDescription = "Featured Banner",
+            modifier = Modifier
+                .matchParentSize()
+                .blur(radius = 8.dp),
+            contentScale = ContentScale.Crop
+        )
 
         Box(
             modifier = Modifier
@@ -163,8 +160,8 @@ private fun FeaturedBanner(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
+                            Color(0x00000000),
                             Color(0x66000000),
-                            Color(0x99000000),
                             Color(0xCC000000)
                         )
                     )
@@ -178,14 +175,14 @@ private fun FeaturedBanner(
             verticalArrangement = Arrangement.Bottom
         ) {
             Text(
-                text = item.title,
+                text = "Interstellar",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                text = item.overview,
+                text = "A team travels through a wormhole in space in an attempt to ensure humanity's survival.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.85f),
                 maxLines = 2
@@ -195,10 +192,7 @@ private fun FeaturedBanner(
             Button(
                 onClick = { onPlay(item) },
                 modifier = Modifier
-                    .focusRequester(ctaFocusRequester)
-                    .focusProperties {
-                        nextDownRequester?.let { _ -> }
-                    },
+                    .focusRequester(ctaFocusRequester),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF00BCD4),
                     contentColor = Color.Black
@@ -250,6 +244,7 @@ private fun SectionRow(
                     PosterCard(
                         title = media.title,
                         imageRes = media.posterResId,
+                        imageUrl = media.posterUrl,
                         onClick = { navTo(media.id) },
                         modifier = if (isFirst && firstItemFocusRequester != null) {
                             Modifier.focusRequester(firstItemFocusRequester)
