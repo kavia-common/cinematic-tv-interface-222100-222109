@@ -3,6 +3,8 @@
 
     <!-- Declare Leanback feature to target TV devices; not strictly required so app remains installable on non-TV -->
     <uses-feature android:name="android.software.leanback" android:required="false" />
+    <!-- TV devices may not have a touchscreen; mark as not required to satisfy Lint and allow TV install -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
         android:label="@string/app_name"

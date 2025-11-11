@@ -44,19 +44,19 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
-            item {
+            this@LazyColumn.item {
                 Spacer(modifier = Modifier.height(12.dp))
             }
-            item {
+            this@LazyColumn.item {
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 12.dp)
                 ) {
-                    items(cat.items) { item ->
+                    items(cat.items) { media ->
                         PosterCard(
-                            title = item.title,
-                            imageRes = item.posterResId,
-                            onClick = { navController.navigate(Routes.detailsFor(item.id)) }
+                            title = media.title,
+                            imageRes = media.posterResId,
+                            onClick = { navController.navigate(Routes.detailsFor(media.id)) }
                         )
                     }
                 }

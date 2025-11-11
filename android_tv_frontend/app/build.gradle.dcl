@@ -27,6 +27,9 @@ androidApplication {
         implementation("androidx.tv:tv-foundation:1.0.0-alpha10")
         implementation("androidx.tv:tv-material:1.0.0-alpha10")
 
+        // Material Components for Android (XML themes/resources)
+        implementation("com.google.android.material:material:1.12.0")
+
         // Existing dependencies
         implementation("org.apache.commons:commons-text:1.11.0")
         implementation(project(":utilities"))
