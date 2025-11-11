@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- PUBLIC_INTERFACE -->
-    <!-- Theme used by the application/activity. Using Material3 DayNight with no action bar for TV. -->
-    <style name="Theme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- App theme extending Material3 DayNight NoActionBar to avoid cyclic inheritance -->
+    <style name="AppTheme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- TV-friendly defaults could be added here (e.g., larger font scales, focus visuals) -->
     </style>
 </resources>

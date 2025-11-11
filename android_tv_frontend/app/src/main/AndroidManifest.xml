@@ -11,7 +11,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
+            android:theme="@style/AppTheme.Material3.DayNight.NoActionBar">
             <!-- Standard phone/tablet launcher (kept for flexibility) -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
